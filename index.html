@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Your Tasks</title>
+</head>
+<body>
+  <script>
+    let body = document.body;
+    body.style.cssText = 'max-width: 768px;margin-top: 0px;margin-bottom: 0px;margin-left: auto;margin-right: auto;background-image: url(main_image.jpg);background-size: cover;min-height: 100vh;';
+    let content = document.createElement('div');
+    content.style.cssText = 'display: flex;gap: 25px;flex-direction: column;max-width: 768px;margin-top: 0px;margin-bottom: 0px;opacity: 0.75;';
+    body.append(content);
+    let form = document.createElement('form');
+    form.style.cssText = 'background-color: #bdbdbd;padding: 25px;margin: 25px;border-radius: 10px;display: flex;gap: 20px;flex-grow: 1;';
+    content.append(form);
+    let input = document.createElement('input');
+    input.setAttribute('type', 'name');
+    input.setAttribute('placeholder', 'New Adventure');
+    input.style.cssText = 'background-color: whitesmoke;outline: none;border: none;height: 35px;border-radius: 10px;padding: 5px 15px;flex-grow: 1;font-size: 18px';
+    form.append(input);
+    let button = document.createElement('button');
+    button.innerHTML = 'Add Task';
+    button.style.cssText = 'color: whitesmoke;background-color: red;font-size: 20px;outline: none;border: none;border-radius: 10px;padding: 0px 15px;height: 45px;display: inline-flex;align-items: center;cursor: pointer;';
+    form.append(button);
+    let tasksDiv = document.createElement('div');
+    tasksDiv.style.cssText = 'background-color: #bdbdbd;padding: 25px;margin: 25px;border-radius: 10px;display: flex;gap: 20px;flex-grow: 1;flex-direction: column;';
+    content.append(tasksDiv);
+    // if (body.style.width <= '480px'){
+    //   form.style.flexDirection = 'column';
+    //   input.style.justifyContent = 'center';
+    // }
+    button.onclick = function () {
+      let taskName = input.value;
+      let taskVAr = null;
+      let tasksFromLocal = null;
+      let tasksToLocal = null;
+      if (taskName != '') {
+        if (localStorage.tasks != undefined && localStorage.tasks == '') {
+          localStorage.clear();
+        } if (localStorage.tasks != undefined && localStorage.tasks != '') {
+          taskVAr = `|${taskName}`;
+          tasksFromLocal = localStorage.tasks;
+          tasksToLocal = tasksFromLocal.concat(taskVAr);
+          localStorage.tasks = `${tasksToLocal}`;
+        }
+      } if (localStorage.tasks == undefined) {
+        taskVAr = `${taskName}`;
+        localStorage.setItem('tasks', `${taskVAr}`);
+      };
+    }
+    if (localStorage.tasks != undefined) {
+      let taskEle = null;
+      let deleteTaskBtn = null;
+      let tasksArray = localStorage.tasks.split('|');
+      tasksArray.map(function creatTaskEle(ele, ind) {
+        taskEle = document.createElement('div');
+        taskEle.className = `task${ind}`;
+        taskEle.style.cssText = 'background-color: rgb(238, 238, 238);letter-spacing: 1.5px;border-radius: 10px;padding: 10px 15px;display: inline-flex;align-items: center;justify-content: space-between;';
+        tasksDiv.append(taskEle);
+        taskTixt = document.createElement('p')
+        taskTixt.className = `task${ind}Tixt`;
+        taskTixt.innerHTML = `${ele}`;
+        taskTixt.style.cssText = 'max-width: calc(100% - 88.55px);color: brown;font-size: 20px;letter-spacing: 1.5px;font-weight: 600;display: inline-flex;margin: 0px;overflow-y: auto;';
+        taskEle.append(taskTixt);
+        deleteTaskBtn = document.createElement('button');
+        deleteTaskBtn.className = `deletBtn${ind}`;
+        deleteTaskBtn.innerHTML = 'Delete';
+        deleteTaskBtn.style.cssText = 'color: whitesmoke;background-color: red;outline: none;border: none;border-radius: 10px;padding: 0px 10px;height: 30px;display: inline-flex;align-items: center;cursor: pointer;';
+        taskEle.append(deleteTaskBtn)
+        deleteTaskBtn.onclick = function () {
+          if (tasksArray.length == 1) {
+            document.querySelector(`div.task${ind}`).remove();
+            tasksArray[`${ind}`] = null;
+            tasksArray = tasksArray.filter(ele => ele != null);
+            localStorage.clear();
+          } if (tasksArray.length > 1) {
+            document.querySelector(`div.task${ind}`).remove();
+            tasksArray[`${ind}`] = null;
+            tasksArray = tasksArray.filter(ele => ele != null);
+            localStorage.clear()
+            for (let i = 0; tasksArray.length > i; i++) {
+            localStorage.tasks += `|${tasksArray[i]}`;
+            }
+          }
+        };
+      })
+    };
+  </script>
+</body>
+</html>
